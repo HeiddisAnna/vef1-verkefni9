@@ -22,6 +22,7 @@ const program = (() => {
     img.setAttribute('src', 'loading.gif');
 
     loading.appendChild(img);
+    loading.appendChild(document.createTextNode('Leita að léni...'));
     container.appendChild(loading);
   }
 
@@ -71,7 +72,6 @@ const program = (() => {
     }
     return null;
   }
-
 
   function displayDomain(thisDomain){
     if(thisDomain.length === 0) {
