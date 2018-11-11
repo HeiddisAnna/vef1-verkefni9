@@ -7,6 +7,36 @@ const API_URL = 'http://apis.is/isnic?domain=';
 const program = (() => {
   let domains;
 
+  function displayLoading(){
+    //empty(result);
+    const container = domains.querySelector('.results');
+
+    while(container.firstChild){
+      container.removeChild(container.firstChild);
+    }
+
+    var loading = element('div');
+    loading.classList.add('loading');
+
+    var img = element('img');
+    img.setAttribute('src', 'loading.gif');
+
+    loading.appendChild(img);
+    container.appendChild(loading);
+  }
+
+  function element(name, child) {
+    var el = document.createElement(name);
+
+    if (typeof child === 'string') {
+      el.appendChild(document.createTextNode(child));
+    } else if (typeof child === 'object') {
+      el.appendChild(child)
+    }
+    return el;
+  }
+
+
   function displayElement(element, text){
     const dl = document.createElement('dl');
 
@@ -15,11 +45,31 @@ const program = (() => {
     dl.appendChild(domainElement);
 
     const domainValue = document.createElement('dd');
-    console.log(domainValue)
+    
+    //console.log(element.length > 0);
     domainValue.appendChild(document.createTextNode(element));
     dl.appendChild(domainValue);
 
     return dl;
+  }
+
+  function displayOptionalElement(element, text){
+    if(element.length > 0){
+      const dl = document.createElement('dl');
+
+      const domainElement = document.createElement('dt');
+      domainElement.appendChild(document.createTextNode(text));
+      dl.appendChild(domainElement);
+
+      const domainValue = document.createElement('dd');
+      
+      //console.log(element.length > 0);
+      domainValue.appendChild(document.createTextNode(element));
+      dl.appendChild(domainValue);
+
+      return dl;
+    }
+    return null;
   }
 
 
@@ -31,15 +81,18 @@ const program = (() => {
 
     const[{domain, registrantname, address, city, postalCode, country,
       phone, email, registered, expires, lastChange}] = thisDomain;
+
+    //var n = registered.toISOString();
+    //console.log(n);
     
     const dlDomain =displayElement(domain, 'Lén');
     const dlRegisterd =displayElement(registered, 'Skráð');
     const dlLastChange =displayElement(lastChange, 'Seinast breytt');
     const dlExpires =displayElement(expires, 'Rennur út');
-    const dlRegistrantname =displayElement(registrantname, 'Skráningaraðili');
-    const dlEmail =displayElement(email, 'Netfang');
-    const dlAddress =displayElement(address, 'Heimilisfang');
-    const dlCountry =displayElement(country, 'Land');
+    const dlRegistrantname =displayOptionalElement(registrantname, 'Skráningaraðili');
+    const dlEmail =displayOptionalElement(email, 'Netfang');
+    const dlAddress =displayOptionalElement(address, 'Heimilisfang');
+    const dlCountry =displayOptionalElement(country, 'Land');
 
     const container = domains.querySelector('.results');
 
@@ -52,7 +105,7 @@ const program = (() => {
     container.appendChild(dlLastChange);
     container.appendChild(dlExpires);
 
-    console.log(dlRegistrantname);
+    //console.log(dlRegistrantname);
     if(dlRegistrantname != null){
       container.appendChild(dlRegistrantname);
     }
@@ -79,6 +132,7 @@ const program = (() => {
 
 
   function fetchData(domain) {
+    displayLoading();
     fetch(`${API_URL}${domain}`)
       .then((response) => {
         //Virðist sem svarið okkar sé alltaf OK, þar er bara tómt ef lénið er ekki til
@@ -93,10 +147,11 @@ const program = (() => {
         displayDomain(data.results);
       })
       .catch((error) => {
-        //Get líka set ekki það orð sem að ég vil að standi, þá stendur ekki þetta Error fyrir framan
-        displayError('Lén verður að vera strengur');
-        //TODO Villumeðhöndlun
-        console.log(error);
+        if(domain.length > 0){
+          displayError('Villa við að sækja gögn');  // Hvað á að standa hér ??
+        } else {
+          displayError('Lén verður að vera strengur');
+        }
       })
   }
 
@@ -104,7 +159,6 @@ const program = (() => {
     e.preventDefault();
 
     const input = e.target.querySelector('input');
-    console.log(input.value);
 
     // TODO Höndla tómastreng
 
