@@ -82,13 +82,18 @@ const program = (() => {
     const[{domain, registrantname, address, city, postalCode, country,
       phone, email, registered, expires, lastChange}] = thisDomain;
 
-    //var n = registered.toISOString();
-    //console.log(n);
+    const dayRegistered = new Date(registered);
+    const ISORegistered = dayRegistered.toISOString().substring(0, 10);;
+    const dayLastChange = new Date(lastChange);
+    const ISOLastChange = dayLastChange.toISOString().substring(0, 10);;
+    const dayExpires = new Date(expires);
+    const ISOExpires = dayExpires.toISOString().substring(0, 10);;
+   
     
     const dlDomain =displayElement(domain, 'Lén');
-    const dlRegisterd =displayElement(registered, 'Skráð');
-    const dlLastChange =displayElement(lastChange, 'Seinast breytt');
-    const dlExpires =displayElement(expires, 'Rennur út');
+    const dlRegisterd =displayElement(ISORegistered, 'Skráð');
+    const dlLastChange =displayElement(ISOLastChange, 'Seinast breytt');
+    const dlExpires =displayElement(ISOExpires, 'Rennur út');
     const dlRegistrantname =displayOptionalElement(registrantname, 'Skráningaraðili');
     const dlEmail =displayOptionalElement(email, 'Netfang');
     const dlAddress =displayOptionalElement(address, 'Heimilisfang');
