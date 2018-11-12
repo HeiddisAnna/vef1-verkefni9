@@ -8,7 +8,6 @@ const program = (() => {
   let domains;
 
   function displayLoading(){
-    //empty(result);
     const container = domains.querySelector('.results');
 
     while(container.firstChild){
@@ -46,8 +45,7 @@ const program = (() => {
     dl.appendChild(domainElement);
 
     const domainValue = document.createElement('dd');
-    
-    //console.log(element.length > 0);
+  
     domainValue.appendChild(document.createTextNode(element));
     dl.appendChild(domainValue);
 
@@ -64,7 +62,6 @@ const program = (() => {
 
       const domainValue = document.createElement('dd');
       
-      //console.log(element.length > 0);
       domainValue.appendChild(document.createTextNode(element));
       dl.appendChild(domainValue);
 
@@ -110,7 +107,6 @@ const program = (() => {
     container.appendChild(dlLastChange);
     container.appendChild(dlExpires);
 
-    //console.log(dlRegistrantname);
     if(dlRegistrantname != null){
       container.appendChild(dlRegistrantname);
     }
@@ -140,8 +136,6 @@ const program = (() => {
     displayLoading();
     fetch(`${API_URL}${domain}`)
       .then((response) => {
-        //Virðist sem svarið okkar sé alltaf OK, þar er bara tómt ef lénið er ekki til
-        //Skiilar stöðu 403 ef strengurinn er tómur, þ.e. ekki leitað af neinu
         if(response.ok) {
           return response.json();
         }
@@ -153,7 +147,7 @@ const program = (() => {
       })
       .catch((error) => {
         if(domain.length > 0){
-          displayError('Villa við að sækja gögn');  // Hvað á að standa hér ??
+          displayError('Villa við að sækja gögn');  
         } else {
           displayError('Lén verður að vera strengur');
         }
@@ -165,12 +159,8 @@ const program = (() => {
 
     const input = e.target.querySelector('input');
 
-    // TODO Höndla tómastreng
-
     fetchData(input.value);
   }
-
-
 
   function init(_domains) {
     domains = _domains;
